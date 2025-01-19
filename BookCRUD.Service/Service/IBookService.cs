@@ -7,7 +7,7 @@ public interface IBookService
 {
     Guid AddBookService(BookDto book);
     void UpdateBookService(BookDto book);
-    void DeleteBookService(BookDto bookId);
+    void DeleteBookService(Guid bookId);
     Book GetBookByIdService(Guid bookId);
     List<BookDto> GetAllBooksService();
     

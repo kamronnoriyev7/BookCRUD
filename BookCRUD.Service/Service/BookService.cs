@@ -7,7 +7,6 @@ namespace BookCRUD.Service.Service;
 public class BookService: IBookService
 {
     private readonly IBookRepository _bookRepository;
-    private IBookService _bookServiceImplementation;
 
     public BookService()
     {
@@ -17,8 +16,8 @@ public class BookService: IBookService
     public Guid AddBookService(BookDto bookDto)
     {
         var bookEntity = ConvertToBookEntity(bookDto);
-        var idBook = _bookRepository.AddBook(bookEntity);
-        return idBook;
+        var result = _bookRepository.AddBook(bookEntity);
+        return result;
     }
 
     public void UpdateBookService(BookDto bookDto)
@@ -26,11 +25,10 @@ public class BookService: IBookService
         var bookEntity = ConvertToBookEntity(bookDto);
         _bookRepository.UpdateBook(bookEntity);
     }
-    
-    public void DeleteBookService(BookDto bookDto)
+
+    public void DeleteBookService(Guid bookId)
     {
-        var bookEntity = ConvertToBookEntity(bookDto);
-        _bookRepository.DeleteBook(bookEntity.Id);
+        _bookRepository.DeleteBook(bookId);
     }
 
     public Book GetBookByIdService(Guid bookId)
@@ -49,7 +47,7 @@ public class BookService: IBookService
     {
         return new Book()
         {
-            Id = bookDto.Id ,
+            Id = new Guid()  ,
             Title = bookDto.Title,
             Author = bookDto.Author,
             Publisher = bookDto.Publisher,
@@ -61,7 +59,6 @@ public class BookService: IBookService
     {
         return new BookDto()
         {
-            Id = book.Id,
             Title = book.Title,
             Author = book.Author,
             Publisher = book.Publisher,

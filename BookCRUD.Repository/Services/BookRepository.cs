@@ -6,22 +6,27 @@ namespace BookCRUD.Repository.Services;
 public class BookRepository: IBookRepository
 {
     private readonly string _path;
+    private readonly string _fileName;
     private List<Book> _books;
 
     public BookRepository()
     {
-        _path = Path.Combine(Directory.GetCurrentDirectory(), "Books.json");
+        _path = Path.Combine(Directory.GetCurrentDirectory() ,"Books.json");
+        _fileName = Path.Combine(Directory.GetCurrentDirectory(), "Books.json");
+        _books = new List<Book>();
 
-        if (!File.Exists(_path))
+        if (!File.Exists(_fileName))
         {
-            File.WriteAllText(_path, "{}");
+            File.WriteAllText(_fileName, "{}");
         }
 
         _books = GetAllBooks();
+
     }
 
     public Guid AddBook(Book book)
     {
+        book.Id = Guid.NewGuid();
         _books.Add(book);
         SaveData();
         return book.Id;
@@ -29,21 +34,26 @@ public class BookRepository: IBookRepository
 
     public Book GetBookById(Guid id)
     {
-        return _books.FirstOrDefault(x => x.Id == id);
+        var book = _books.FirstOrDefault(x => x.Id == id);
+        if (book == null)
+        {
+            throw new KeyNotFoundException("Book not found");
+        }
+        return book;
     }
 
     public List<Book> GetAllBooks()
     {
-        var books = File.ReadAllText(_path);
-        var bookList = JsonSerializer.Deserialize<List<Book>>(books);
+        var booksJson = File.ReadAllText(_path);
+        var bookList = JsonSerializer.Deserialize<List<Book>>(booksJson);
         return bookList;
     }
 
     public void UpdateBook(Book book)
     {
         var books = GetBookById(book.Id);
-        var bookIndex = _books.FindIndex(x => x.Id == book.Id);
-        _books[bookIndex] = book;
+        var index = _books.IndexOf(books);
+        _books[index] = book;
         SaveData();
     }
 
