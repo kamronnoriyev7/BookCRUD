@@ -22,6 +22,7 @@ namespace BookCRUD.Service
                 app.UseSwaggerUI();
             }
 
+            app.UseRequestLogging();
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
